@@ -8,6 +8,9 @@
     <title>calculadora</title>
 </head>
 <body>
+
+<main>
+    <input id="display" type="text" value="0">
     <section>
         <button>7</button>
         <button>8</button>
@@ -23,8 +26,71 @@
         <button class="op">-</button>
         <button>.</button>
         <button>0</button>
-        <button class="op">%</button>
+        <button class="op">/</button>
         <button class="op">=</button>
-    </section>   
+    </section>
+</main> 
+    
+    <script type="text/javascript">   
+        const buttons = document.querySelectorAll('button')
+        const display = document.querySelector('#display')
+
+        const calculator = {
+            displayValue: '0',
+            firstOperand: null,
+            waitingForSecondOperand: false,
+            operator: null,
+        }
+
+        function updateDisplay() {
+            display.value = calculator.displayValue
+        }
+
+        updateDisplay()
+
+        function performCalculation(operator) {
+            const value = parseFloat(calculator.displayValue)
+            if (calculator.firstOperand == null) {
+                calculator.firstOperand = value
+            } else if (calculator.operator) {
+                const result = calculator.operator(calculator.firstOperand, value)
+                calculator.displayValue = result
+                calculator.firstOperand = result
+            }
+            calculator.waitingForSecondOperand = true
+            calculator.operator = operator
+            updateDisplay()
+        }
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const key = button.innerText
+                if (key === 'C') {
+                    calculator.displayValue = '0'
+                    calculator.firstOperand = null
+                    calculator.waitingForSecondOperand = false
+                    calculator.operator = null
+                } else if (key === '=') {
+                    performCalculation(calculator.operator)
+                } else if (key === '+' || key === '-' || key === '*' || key === '/') {
+                    performCalculation(new Function ('a', 'b', `return a ${key} b`))
+                } else if (key === '-') {
+                    if (!calculator.displayValue.includes('.')) {
+                        calculator.displayValue += '.'
+                    }
+                } else {
+                    if (calculator.waitingForSecondOperand) {
+                        calculator.displayValue = key
+                        calculator.waitingForSecondOperand = false
+                    } else {
+                        calculator.displayValue += key
+                    }
+                }
+                updateDisplay()
+            })
+        })
+
+    </script>
+
 </body>
 </html>
