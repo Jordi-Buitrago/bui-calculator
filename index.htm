@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="src/App.css">
+    <link rel="icon" href="images/favicon.png">
     <title>calculadora</title>
 </head>
 <body>
+    <button id="cleanUp">C</button>
 
-<main>
-    <input id="display" type="text" value="0">
+    <input autofocus id="display" type="text" value="0">
     <section>
         <button>7</button>
         <button>8</button>
@@ -29,68 +30,8 @@
         <button class="op">/</button>
         <button class="op">=</button>
     </section>
-</main> 
     
-    <script type="text/javascript">   
-        const buttons = document.querySelectorAll('button')
-        const display = document.querySelector('#display')
-
-        const calculator = {
-            displayValue: '0',
-            firstOperand: null,
-            waitingForSecondOperand: false,
-            operator: null,
-        }
-
-        function updateDisplay() {
-            display.value = calculator.displayValue
-        }
-
-        updateDisplay()
-
-        function performCalculation(operator) {
-            const value = parseFloat(calculator.displayValue)
-            if (calculator.firstOperand == null) {
-                calculator.firstOperand = value
-            } else if (calculator.operator) {
-                const result = calculator.operator(calculator.firstOperand, value)
-                calculator.displayValue = result
-                calculator.firstOperand = result
-            }
-            calculator.waitingForSecondOperand = true
-            calculator.operator = operator
-            updateDisplay()
-        }
-
-        buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                const key = button.innerText
-                if (key === 'C') {
-                    calculator.displayValue = '0'
-                    calculator.firstOperand = null
-                    calculator.waitingForSecondOperand = false
-                    calculator.operator = null
-                } else if (key === '=') {
-                    performCalculation(calculator.operator)
-                } else if (key === '+' || key === '-' || key === '*' || key === '/') {
-                    performCalculation(new Function ('a', 'b', `return a ${key} b`))
-                } else if (key === '-') {
-                    if (!calculator.displayValue.includes('.')) {
-                        calculator.displayValue += '.'
-                    }
-                } else {
-                    if (calculator.waitingForSecondOperand) {
-                        calculator.displayValue = key
-                        calculator.waitingForSecondOperand = false
-                    } else {
-                        calculator.displayValue += key
-                    }
-                }
-                updateDisplay()
-            })
-        })
-
-    </script>
+    <script src="src/App.js"></script>
 
 </body>
 </html>
